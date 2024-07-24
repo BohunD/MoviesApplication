@@ -1,12 +1,15 @@
 **Overview**
+
 The Movies Application is an Android app designed to display movie information using The Movie Database (TMDb) API. The app showcases trending movies and provides detailed information about each movie. It features modern Android development practices and tools, including Jetpack Compose for the UI and Hilt for dependency injection.
 
 **Features**
+
 - Movie List Screen: Displays a list of trending and popular movies.
 - Movie Details Screen: Shows detailed information about a selected movie.
 - Pagination: Loads more movies as the user scrolls to the bottom of the list.
 
 **Tech Stack**
+
 - Kotlin: Primary programming language.
 - Jetpack Compose: For building the UI.
 - Coroutines: For handling asynchronous operations.
