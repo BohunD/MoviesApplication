@@ -4,4 +4,12 @@
     <string name="connection_problem">Connection Problem!!</string>
     <string name="you_have_reached_the_end">You have reached the end</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="movie_info">Movie Info</string>
+    <string name="release_date">Release Date</string>
+    <string name="rating">Rating</string>
+    <string name="minutes">%1$s minutes</string>
+    <string name="budget">Budget</string>
+    <string name="runtime">Runtime</string>
+    <string name="revenue">Revenue</string>
+    <string name="overview">Overview</string>
 </resources>

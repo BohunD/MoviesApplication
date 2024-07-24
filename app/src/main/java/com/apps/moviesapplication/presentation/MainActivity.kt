@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.apps.moviesapplication.presentation.navigation.MoviesAppNavigation
-import com.apps.moviesapplication.ui.theme.MoviesApplicationTheme
+import com.apps.moviesapplication.presentation.ui.theme.MoviesApplicationTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 

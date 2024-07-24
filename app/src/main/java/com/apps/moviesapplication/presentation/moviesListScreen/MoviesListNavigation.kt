@@ -8,10 +8,10 @@ const val MOVIES_LIST_ROUTE = "movies_list"
 
 fun NavController.navigateToMoviesList() = navigate(MOVIES_LIST_ROUTE)
 
-fun NavGraphBuilder.moviesListScreen() {
+fun NavGraphBuilder.moviesListScreen(onMovieClicked: (Int)->Unit) {
     composable(
         route = MOVIES_LIST_ROUTE,
     ) {
-        MoviesListRoute()
+        MoviesListRoute{onMovieClicked(it)}
     }
 }

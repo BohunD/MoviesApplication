@@ -2,6 +2,7 @@ package com.apps.moviesapplication.presentation.moviesListScreen
 
 import android.os.Build
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,20 +45,23 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-internal fun MoviesListRoute() {
+internal fun MoviesListRoute(onMovieClicked: (Int)->Unit) {
     val viewModel: MoviesListViewModel = hiltViewModel()
-    MoviesListScreen(viewModel)
+    MoviesListScreen(viewModel, onMovieClicked)
 }
 
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesListViewModel,
+    onMovieClicked: (Int)->Unit
 ) {
     val moviesPagingData = viewModel.trendingMovies.collectAsLazyPagingItems()
 
     LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
         items(moviesPagingData.itemCount) { index ->
-            moviesPagingData[index]?.let { MovieItem(it) }
+            moviesPagingData[index]?.let { MovieItem(it){
+                onMovieClicked(it)
+            } }
         }
         moviesPagingData.apply {
             when {
@@ -127,8 +131,8 @@ fun ErrorMessage() {
 }
 
 @Composable
-fun MovieItem(movie: TmdbApiService.Movie) {
-    val imageUrl = stringResource(R.string.image_url, movie.posterPath)
+fun MovieItem(movie: TmdbApiService.MovieDemo, onMovieClicked: (Int)->Unit) {
+    val imageUrl = stringResource(R.string.image_url, movie.poster_path)
 
     Box(
         Modifier
@@ -137,6 +141,7 @@ fun MovieItem(movie: TmdbApiService.Movie) {
             .height(250.dp)
             .shadow(elevation = 3.dp)
             .background(colorResource(id = R.color.lightLightGray))
+            .clickable{onMovieClicked(movie.id)}
     ) {
         Column(
             modifier = Modifier
@@ -156,7 +161,7 @@ fun MovieItem(movie: TmdbApiService.Movie) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 try {
                     val releaseDate = LocalDate.parse(
-                        movie.releaseDate,
+                        movie.release_date,
                         DateTimeFormatter.ofPattern("yyyy-MM-dd")
                     )
                     releaseYear = releaseDate.year.toString()
@@ -165,7 +170,7 @@ fun MovieItem(movie: TmdbApiService.Movie) {
                 }
             } else {
                 try {
-                    releaseYear = movie.releaseDate.substring(0, 4)
+                    releaseYear = movie.release_date.substring(0, 4)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

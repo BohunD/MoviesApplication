@@ -1,6 +1,10 @@
 package com.apps.moviesapplication.di
 
 import com.apps.moviesapplication.data.network.TmdbApiService
+import com.apps.moviesapplication.data.repository.MovieInfoRepositoryImpl
+import com.apps.moviesapplication.data.repository.MoviesRepositoryImpl
+import com.apps.moviesapplication.domain.repository.MovieInfoRepository
+import com.apps.moviesapplication.domain.repository.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +44,17 @@ object NetworkModule {
     @Singleton
     fun provideTmdbApiService(retrofit: Retrofit): TmdbApiService {
         return retrofit.create(TmdbApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoviesRepository(apiService: TmdbApiService): MoviesRepository {
+        return MoviesRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMovieDetailsRepository(apiService: TmdbApiService): MovieInfoRepository {
+        return MovieInfoRepositoryImpl(apiService)
     }
 }
