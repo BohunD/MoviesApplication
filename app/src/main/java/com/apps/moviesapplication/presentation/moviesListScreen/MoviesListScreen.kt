@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -39,13 +38,13 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.apps.moviesapplication.R
-import com.apps.moviesapplication.data.network.TmdbApiService
+import com.apps.moviesapplication.data.models.MovieDemo
 import com.apps.moviesapplication.presentation.moviesListScreen.viewModel.MoviesListViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-internal fun MoviesListRoute(onMovieClicked: (Int)->Unit) {
+internal fun MoviesListRoute(onMovieClicked: (Int) -> Unit) {
     val viewModel: MoviesListViewModel = hiltViewModel()
     MoviesListScreen(viewModel, onMovieClicked)
 }
@@ -53,37 +52,33 @@ internal fun MoviesListRoute(onMovieClicked: (Int)->Unit) {
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesListViewModel,
-    onMovieClicked: (Int)->Unit
+    onMovieClicked: (Int) -> Unit
 ) {
     val moviesPagingData = viewModel.trendingMovies.collectAsLazyPagingItems()
 
     LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
         items(moviesPagingData.itemCount) { index ->
-            moviesPagingData[index]?.let { MovieItem(it){
-                onMovieClicked(it)
+            moviesPagingData[index]?.let { MovieItem(it) { id ->
+                onMovieClicked(id)
             } }
         }
         moviesPagingData.apply {
-            when {
-
-                loadState.append is LoadState.Loading -> {
+            when (loadState.append) {
+                is LoadState.Loading -> {
                     item(span = { GridItemSpan(maxLineSpan) }) { LoadingNextPageItem() }
                 }
-
-                loadState.append is LoadState.Error -> {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        ErrorMessage()
-                    }
+                is LoadState.Error -> {
+                    item(span = { GridItemSpan(maxLineSpan) }) { ErrorMessage() }
                 }
-
-                loadState.append is LoadState.NotLoading && loadState.append.endOfPaginationReached -> {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        NoMoreMoviesItem()
+                is LoadState.NotLoading -> {
+                    if (loadState.append.endOfPaginationReached) {
+                        item(span = { GridItemSpan(maxLineSpan) }) { NoMoreMoviesItem() }
                     }
                 }
             }
         }
     }
+
     if (moviesPagingData.loadState.refresh is LoadState.Loading) {
         PageLoader()
     } else if (moviesPagingData.loadState.refresh is LoadState.Error) {
@@ -91,7 +86,6 @@ fun MoviesListScreen(
             Text(text = stringResource(R.string.connection_problem))
         }
     }
-
 }
 
 @Composable
@@ -118,7 +112,6 @@ fun NoMoreMoviesItem() {
             .background(Color.LightGray), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(36.dp))
-
         Text(text = stringResource(R.string.you_have_reached_the_end), modifier = Modifier.padding(5.dp))
     }
 }
@@ -131,7 +124,7 @@ fun ErrorMessage() {
 }
 
 @Composable
-fun MovieItem(movie: TmdbApiService.MovieDemo, onMovieClicked: (Int)->Unit) {
+fun MovieItem(movie: MovieDemo, onMovieClicked: (Int) -> Unit) {
     val imageUrl = stringResource(R.string.image_url, movie.poster_path)
 
     Box(
@@ -139,14 +132,10 @@ fun MovieItem(movie: TmdbApiService.MovieDemo, onMovieClicked: (Int)->Unit) {
             .padding(5.dp)
             .fillMaxWidth()
             .height(250.dp)
-            .shadow(elevation = 3.dp)
             .background(colorResource(id = R.color.lightLightGray))
-            .clickable{onMovieClicked(movie.id)}
+            .clickable { onMovieClicked(movie.id) }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(), horizontalAlignment = Alignment.Start
-        ) {
+        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
@@ -157,24 +146,23 @@ fun MovieItem(movie: TmdbApiService.MovieDemo, onMovieClicked: (Int)->Unit) {
                     .fillMaxHeight(0.8f)
             )
 
-            var releaseYear = ""
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val releaseYear = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 try {
-                    val releaseDate = LocalDate.parse(
-                        movie.release_date,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    )
-                    releaseYear = releaseDate.year.toString()
+                    val releaseDate = LocalDate.parse(movie.release_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    releaseDate.year.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    ""
                 }
             } else {
                 try {
-                    releaseYear = movie.release_date.substring(0, 4)
+                    movie.release_date.substring(0, 4)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    ""
                 }
             }
+
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Text(
                     text = movie.title,

@@ -1,9 +1,8 @@
 package com.apps.moviesapplication.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import com.apps.moviesapplication.presentation.movieInfoScreen.movieInfoScreen
 import com.apps.moviesapplication.presentation.movieInfoScreen.navigateToMovieInfo
 import com.apps.moviesapplication.presentation.moviesListScreen.MOVIES_LIST_ROUTE
@@ -21,6 +20,6 @@ fun MoviesAppNavigation(
         moviesListScreen(
             onMovieClicked = {navController.navigateToMovieInfo(it)}
         )
-        movieInfoScreen()
+        movieInfoScreen(onBackPressed = {navController.popBackStack()})
     }
 }
