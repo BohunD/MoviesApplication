@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.apps.moviesapplication.data.models.MovieFull
 import com.apps.moviesapplication.domain.repository.MovieInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class MovieInfoViewModel @Inject constructor(
     val movie: StateFlow<MovieFull?> = _movie
 
     fun fetchMovieDetails(id: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = movieInfoRepository.getMovieDetails(id)
                 _movie.value = response
