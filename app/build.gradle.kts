@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.apps.moviesapplication"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.testing)
+    implementation(libs.androidx.ui.test.junit4.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,6 +78,27 @@ dependencies {
 
     implementation (libs.navigation.compose)
     implementation (libs.androidx.hilt.navigation.fragment)
+
+    testImplementation (libs.mockito.core)
+    testImplementation (libs.mockito.inline)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
+
+
+    testImplementation (libs.androidx.core.testing)
+    testImplementation (libs.mockwebserver)
+    testImplementation (libs.androidx.paging.testing)
+
+    implementation (libs.moshi)
+    implementation(libs.moshi.kotlin)
+    kapt (libs.moshi.kotlin.codegen)
+    implementation (libs.converter.moshi)
+    testImplementation (libs.robolectric)
+
+
+
+
 
     implementation(libs.hilt.android)
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
