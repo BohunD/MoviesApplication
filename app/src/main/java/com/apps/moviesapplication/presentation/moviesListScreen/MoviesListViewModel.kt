@@ -10,14 +10,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-abstract class IMoviesListViewModel : ViewModel(){
-    abstract val trendingMovies: Flow<PagingData<MovieDemo>>
-}
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     moviesRepository: MoviesRepository
-) : IMoviesListViewModel() {
+) : ViewModel() {
 
-    override val trendingMovies: Flow<PagingData<MovieDemo>> = moviesRepository.getTrendingMovies().cachedIn(viewModelScope)
+    val trendingMovies: Flow<PagingData<MovieDemo>> = moviesRepository.getTrendingMovies().cachedIn(viewModelScope)
 
 }
