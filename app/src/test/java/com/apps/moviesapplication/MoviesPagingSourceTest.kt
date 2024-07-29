@@ -47,8 +47,8 @@ class MoviesPagingSourceTest {
 
     @Test
     fun `load returns correct data when successful`() = runBlocking {
-        val movieList = listOf(MovieDemo(id = 1, title = "Movie 1", poster_path = "/path1", release_date = "2022-02-22"))
-        val response = TrendingMoviesResponse(results = movieList, total_pages = 1,page = 1, total_results = 1)
+        val movieList = listOf(MovieDemo(id = 1, title = "Movie 1", posterPath = "/path1", releaseDate = "2022-02-22"))
+        val response = TrendingMoviesResponse(results = movieList, totalPages = 1,page = 1, totalResults = 1)
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)

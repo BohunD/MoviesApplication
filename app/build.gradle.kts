@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
-
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -54,6 +54,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -68,6 +69,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.testing)
     implementation(libs.androidx.ui.test.junit4.android)
+    androidTestImplementation(libs.androidx.ui.test.junit4.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,33 +87,29 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.turbine)
 
-
     testImplementation (libs.androidx.core.testing)
     testImplementation (libs.mockwebserver)
     testImplementation (libs.androidx.paging.testing)
 
     implementation (libs.moshi)
     implementation(libs.moshi.kotlin)
-    kapt (libs.moshi.kotlin.codegen)
+    ksp (libs.moshi.kotlin.codegen)
     implementation (libs.converter.moshi)
     testImplementation (libs.robolectric)
 
 
-
-
-
     implementation(libs.hilt.android)
-    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation (libs.androidx.hilt.navigation.compose)
 
-    kapt("com.google.dagger:hilt-android-compiler:2.50")
+    ksp(libs.hilt.android.compiler)
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
 
-    implementation ("androidx.paging:paging-runtime:3.3.0")
-    implementation ("androidx.paging:paging-compose:3.3.0")
+    implementation (libs.androidx.paging.runtime)
+    implementation (libs.androidx.paging.compose)
 
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose)
 
 }

@@ -1,4 +1,4 @@
-package com.apps.moviesapplication.presentation.moviesListScreen.viewModel
+package com.apps.moviesapplication.presentation.moviesListScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

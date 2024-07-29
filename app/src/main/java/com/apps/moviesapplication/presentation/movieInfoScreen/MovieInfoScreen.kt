@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,24 +35,37 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import com.apps.moviesapplication.R
 import com.apps.moviesapplication.data.models.MovieFull
-import com.apps.moviesapplication.presentation.movieInfoScreen.viewmodel.MovieInfoViewModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-internal fun MovieInfoRoute(id: Int, onBackPressed: () -> Unit) {
-    val viewModel: MovieInfoViewModel = hiltViewModel()
-    MovieInfoScreen(viewModel, id, onBackPressed)
+fun PreviewMovieInfoScreen() {
+    val mockMovie = MovieFull(
+        id = 1,
+        title = "Movie Preview",
+        tagline = "Your mind is the scene of the crime.",
+        releaseDate = "2024-07-28",
+        voteAverage = 8.8f,
+        runtime = 148,
+        budget = 160000000,
+        revenue = 829895144,
+        overview = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
+    )
+
+    MovieInfoDemo(movie = mockMovie, onBackPressed = {})
 }
 
 @Composable
 fun MovieInfoScreen(
-    viewModel: MovieInfoViewModel,
+    viewModel: MovieInfoViewModel = hiltViewModel(),
     id: Int,
     onBackPressed: () -> Unit,
 ) {
-    viewModel.fetchMovieDetails(id)
+    LaunchedEffect(id) {
+        viewModel.fetchMovieDetails(id)
+    }
     val movie = viewModel.movie.collectAsState().value
     if (movie != null)
         MovieInfoDemo(movie = movie, onBackPressed)
@@ -76,7 +91,7 @@ fun MovieInfoDemo(movie: MovieFull, onBackPressed: () -> Unit) {
                     rememberScrollState()
                 )
         ) {
-            val imageUrl = stringResource(R.string.image_url, movie.poster_path)
+            val imageUrl = stringResource(R.string.image_url, movie.posterPath)
             AsyncImage(
                 model = imageUrl, contentDescription = null, imageLoader = ImageLoader(
                     LocalContext.current
@@ -103,10 +118,10 @@ fun MovieInfoDemo(movie: MovieFull, onBackPressed: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 15.dp)
             )
-            InfoRow(name = stringResource(R.string.release_date), data = movie.release_date)
+            InfoRow(name = stringResource(R.string.release_date), data = movie.releaseDate)
             InfoRow(
                 name = stringResource(R.string.rating),
-                data = String.format(Locale.getDefault(), "%.1f", movie.vote_average)
+                data = String.format(Locale.getDefault(), "%.1f", movie.voteAverage)
             )
             InfoRow(
                 name = stringResource(R.string.runtime),
@@ -137,7 +152,7 @@ fun MovieInfoDemo(movie: MovieFull, onBackPressed: () -> Unit) {
             .padding(15.dp)
             .size(40.dp)
             .clip(RoundedCornerShape(100.dp))
-            .background(Color.White)
+            .background(Color.White.copy(alpha = 0.7f))
             .align(Alignment.TopStart)
             .clickable { onBackPressed() }) {
             Icon(

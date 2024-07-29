@@ -12,6 +12,6 @@ fun NavGraphBuilder.moviesListScreen(onMovieClicked: (Int)->Unit) {
     composable(
         route = MOVIES_LIST_ROUTE,
     ) {
-        MoviesListRoute{onMovieClicked(it)}
+        MoviesListScreen{onMovieClicked(it)}
     }
 }
