@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 
+const val PAGE_LOAD_DELAY_MS = 1000L
 class MoviesPagingSource(
     private val apiService: TmdbApiService
 ) : PagingSource<Int, MovieDemo>() {
@@ -18,12 +19,12 @@ class MoviesPagingSource(
             val response = apiService.getTrendingMovies(page)
             val movies = response.results
             if (page > 1) {
-                delay(1000)
+                delay(PAGE_LOAD_DELAY_MS)
             }
             LoadResult.Page(
                 data = movies,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = if (page >= response.total_pages) null else page + 1
+                nextKey = if (page >= response.totalPages) null else page + 1
             )
         } catch (e: IOException) {
             LoadResult.Error(e)

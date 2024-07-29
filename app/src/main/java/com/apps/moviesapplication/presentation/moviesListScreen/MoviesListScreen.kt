@@ -31,32 +31,66 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.apps.moviesapplication.R
 import com.apps.moviesapplication.data.models.MovieDemo
-import com.apps.moviesapplication.presentation.moviesListScreen.viewModel.MoviesListViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+
+private const val GRID_COLUMN_COUNT = 3
+private const val PREVIEW_LIST_SIZE = 50
 @Composable
-internal fun MoviesListRoute(onMovieClicked: (Int) -> Unit) {
-    val viewModel: MoviesListViewModel = hiltViewModel()
-    MoviesListScreen(viewModel, onMovieClicked)
+fun MoviesListScreen(
+    viewModel: MoviesListViewModel = hiltViewModel(),
+    onMovieClicked: (Int) -> Unit,
+    ){
+    MoviesListContent (
+        viewModel.trendingMovies
+    ){
+        onMovieClicked(it)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewMoviesListScreen() {
+    val sampleMovies = PagingData.from(
+        List(PREVIEW_LIST_SIZE) { index ->
+            MovieDemo(
+                id = index,
+                title = "Title $index",
+                posterPath = "path/to/poster_$index.jpg",
+                releaseDate = "${2024-index}-01-01"
+            )
+        }
+    )
+    val moviesFlow = MutableStateFlow(sampleMovies)
+
+    MoviesListContent(
+        trendingMovies = moviesFlow,
+        onMovieClicked = {}
+    )
 }
 
 @Composable
-fun MoviesListScreen(
-    viewModel: MoviesListViewModel,
-    onMovieClicked: (Int) -> Unit
+fun MoviesListContent(
+    trendingMovies: Flow<PagingData<MovieDemo>>,
+    onMovieClicked: (Int) -> Unit,
 ) {
-    val moviesPagingData = viewModel.trendingMovies.collectAsLazyPagingItems()
+    val moviesPagingData = trendingMovies.collectAsLazyPagingItems()
 
-    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
+    LazyVerticalGrid(columns = GridCells.Fixed(GRID_COLUMN_COUNT), modifier = Modifier.fillMaxSize()) {
         items(moviesPagingData.itemCount) { index ->
             moviesPagingData[index]?.let { MovieItem(it) { id ->
                 onMovieClicked(id)
@@ -125,7 +159,7 @@ fun ErrorMessage() {
 
 @Composable
 fun MovieItem(movie: MovieDemo, onMovieClicked: (Int) -> Unit) {
-    val imageUrl = stringResource(R.string.image_url, movie.poster_path)
+    val imageUrl = stringResource(R.string.image_url, movie.posterPath)
 
     Box(
         Modifier
@@ -148,7 +182,7 @@ fun MovieItem(movie: MovieDemo, onMovieClicked: (Int) -> Unit) {
 
             val releaseYear = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 try {
-                    val releaseDate = LocalDate.parse(movie.release_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    val releaseDate = LocalDate.parse(movie.releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                     releaseDate.year.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -156,7 +190,7 @@ fun MovieItem(movie: MovieDemo, onMovieClicked: (Int) -> Unit) {
                 }
             } else {
                 try {
-                    movie.release_date.substring(0, 4)
+                    movie.releaseDate.substring(0, 4)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     ""

@@ -1,4 +1,4 @@
-package com.apps.moviesapplication.presentation.moviesListScreen.viewModel
+package com.apps.moviesapplication.presentation.moviesListScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,11 +10,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+abstract class IMoviesListViewModel : ViewModel(){
+    abstract val trendingMovies: Flow<PagingData<MovieDemo>>
+}
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     moviesRepository: MoviesRepository
-) : ViewModel() {
+) : IMoviesListViewModel() {
 
-    val trendingMovies: Flow<PagingData<MovieDemo>> = moviesRepository.getTrendingMovies().cachedIn(viewModelScope)
+    override val trendingMovies: Flow<PagingData<MovieDemo>> = moviesRepository.getTrendingMovies().cachedIn(viewModelScope)
 
 }

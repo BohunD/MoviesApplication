@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34"
+        tools:ignore="GradleOverrides" />
+
     <application
         android:name=".MoviesApplication"
         android:allowBackup="true"

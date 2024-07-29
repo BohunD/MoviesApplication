@@ -17,6 +17,6 @@ fun NavGraphBuilder.movieInfoScreen(onBackPressed: ()->Unit) {
         arguments = listOf(navArgument(ID) { type = NavType.IntType })
     ) { backStackEntry ->
         val id = backStackEntry.arguments?.getInt(ID) ?: 0
-        MovieInfoRoute(id, onBackPressed)
+        MovieInfoScreen(id = id, onBackPressed = onBackPressed)
     }
 }
